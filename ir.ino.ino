@@ -11,7 +11,8 @@ const long one = 16611973;
 const long two = 16605343;
 const long three = 16621663;
 const long four = 16638493;
-const timer = 16620133;
+const long timer = 16620133;
+const long coolerB = 16632373;
 
 byte r1 = 0;
 byte r2 = 0;
@@ -37,13 +38,86 @@ void setup()
 }
 
 
+void handleTimer(){
+
+
+  while (irrecv.decode(&results)){
+      long currentValue = results.value;
+      Serial.println("in timer");
+      Serial.println(currentValue);
+      delay(500);
+
+
+    irrecv.resume();
+  }
+  
+}
+void sleeper(int tm){
+
+  delay(tm*1000*60);
+
+  
+  
+}
+void cooler(){
+
+  while (1==1){
+    delay(500);
+        int ctime = 0;
+        byte k=0;
+        while(k==0){
+          
+          if(irrecv.decode(&results)){
+            long currentValue = results.value;
+            Serial.println("in cooler");
+            Serial.println(currentValue);
+            
+          switch(currentValue){
+            case one: ctime=1;
+                      k=1;
+                      break;
+            case two: ctime=2;
+                      k=1;
+                      break;
+            case three: ctime=3;
+                        k=1;
+                      break;
+            case four: ctime=4;
+                      k=1;
+                      break;
+            
+          }
+          irrecv.resume();
+
+        }
+        }
+        while(1){
+//          delay(100);
+//          if(irrecv.decode(&results)){
+//            long currentValue = results.value;
+//            if(currentValue = poweron)
+//            {
+//              return;
+//            }
+//          }
+//          irrecv.resume();
+           Serial.println("in main cooler");
+           Serial.println(ctime);
+           digitalWrite(6,HIGH);
+           sleeper(ctime);
+           digitalWrite(6,LOW);
+           sleeper(ctime);
+        }
+      }
+
+   
+  
+}
 
 
 
 
-
-
-
+void(* resetFunc) (void) = 0;
 
 void loop()
 {
@@ -52,17 +126,16 @@ void loop()
       long currentValue = results.value;
       Serial.println(currentValue);
       if(currentValue == poweron){
-        digitalWrite(6, LOW);
-        digitalWrite(7, LOW);
-        digitalWrite(8, LOW);
-        digitalWrite(9, LOW);
-        r1 = 0;
-        r2 = 0;
-        r3 = 0;
-        r4 = 0;
+        resetFunc();
       }
       else if(currentValue == timer){
+        irrecv.resume();
+
         handleTimer();
+      }
+      else if(currentValue == coolerB){
+        irrecv.resume();
+        cooler();
       }
       else{
 
