@@ -54,7 +54,7 @@ void handleTimer(){
 }
 void sleeper(int tm){
 
-  delay(tm*1000*60);
+  delay(tm*1000);
 
   
   
@@ -126,7 +126,14 @@ void loop()
       long currentValue = results.value;
       Serial.println(currentValue);
       if(currentValue == poweron){
-        resetFunc();
+        digitalWrite(6, LOW);
+        digitalWrite(7, LOW);
+        digitalWrite(8, LOW);
+        digitalWrite(9, LOW);
+        r1 = 0;
+        r2 = 0;
+        r3 = 0;
+        r4 = 0;
       }
       else if(currentValue == timer){
         irrecv.resume();
