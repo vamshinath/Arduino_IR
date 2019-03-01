@@ -52,11 +52,27 @@ void handleTimer(){
   }
   
 }
-void sleeper(int tm){
+byte sleeper(int tm){
 
-  delay(tm*1000);
+  for(int i = tm*600;i>0;i--)
+  {
+    delay(100);
+    
+    if(irrecv.decode(&results)){
+      long currentValue = results.value;
+      Serial.println(currentValue);
+       if(currentValue == poweron)
+       {
+        return 1;
+       }
+    }
+    irrecv.resume();
+    
+          
+  }
 
-  
+  return 0;
+   
   
 }
 void cooler(){
@@ -101,12 +117,19 @@ void cooler(){
 //            }
 //          }
 //          irrecv.resume();
+           byte pp = 0;
            Serial.println("in main cooler");
            Serial.println(ctime);
            digitalWrite(6,HIGH);
-           sleeper(ctime);
+           irrecv.resume();
+           pp=sleeper(ctime);
            digitalWrite(6,LOW);
-           sleeper(ctime);
+           irrecv.resume();
+           pp=sleeper(ctime);
+
+           if(pp == 1){
+            return;
+           }
         }
       }
 
